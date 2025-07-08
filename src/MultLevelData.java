@@ -1,7 +1,6 @@
 import java.util.Random;
 
 public class MultLevelData extends LevelData{
-
     MultLevelData(int levelNumber, int rows, int cols, int[][] gridNumbers,
                   int[] rowSums, int[] colSums) {
         super(levelNumber, rows, cols, gridNumbers, rowSums, colSums);
@@ -22,8 +21,8 @@ public class MultLevelData extends LevelData{
     // Generiert ein Raster abhängig vom Level
     @Override
     public void createGrid() {
-        rows = (int) Math.floor(levelNumber / 6 + 3);
-        cols = (int) Math.floor(levelNumber / 6 + 3);
+        rows = (int) Math.min(Math.floor(levelNumber / 6 + 3), 4);
+        cols = (int) Math.min(Math.floor(levelNumber / 6 + 3), 4);
         rowSums = new int[rows];
         colSums = new int[cols];
         int[][] grid = new int[rows][cols];
@@ -49,13 +48,13 @@ public class MultLevelData extends LevelData{
 
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < cols; j++) {
-                if(rand[i][j] < 0.7) { rowMul *= gridNumbers[i][j]; }
+                if(rand[i][j] < 0.65) { rowMul *= gridNumbers[i][j]; }
                 if(j == cols-1) { rowSums[i] = rowMul; rowMul = 1;}
             }
         }
         for(int j = 0; j < cols; j++) {
             for(int i = 0; i < rows; i++) {
-                if(rand[i][j] < 0.7) { colMul *= gridNumbers[i][j]; }
+                if(rand[i][j] < 0.65) { colMul *= gridNumbers[i][j]; }
                 if(i == rows-1) { colSums[j] = colMul; colMul = 1;}
             }
         }

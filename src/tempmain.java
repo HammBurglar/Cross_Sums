@@ -28,6 +28,6 @@ public class tempmain {
         int[] colSums = {5, 5, 5, 5, 5};
         LevelData testLevel = new LevelData(4);
 
-        SwingUtilities.invokeLater(() -> new UserInterface(startLevel(4)).setVisible(true));
+        SwingUtilities.invokeLater(() -> new UserInterface(startLevel(16)).setVisible(true));
     }
 }

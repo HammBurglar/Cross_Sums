@@ -53,8 +53,8 @@ class LevelData {
 
     // Generiert ein Raster abhängig vom Level
     public void createGrid() {
-        rows = (int) Math.floor(levelNumber / 6 + 3);
-        cols = (int) Math.floor(levelNumber / 6 + 3);
+        rows = (int) Math.min(Math.floor(levelNumber / 6 + 3), 6);
+        cols = (int) Math.min(Math.floor(levelNumber / 6 + 3), 6);
         rowSums = new int[rows];
         colSums = new int[cols];
         int[][] grid = new int[rows][cols];
