@@ -134,7 +134,7 @@ class LevelData {
 
     // Radieren eines Werts
     public void erase(int i, int j) {
-        erasedNumbers = new int[i][j];
+        erasedNumbers = new int[rows][cols];
         if (gridNumbers[i][j] != 0) {
             erasedNumbers[i][j] = gridNumbers[i][j];
             gridNumbers[i][j] = 0;
