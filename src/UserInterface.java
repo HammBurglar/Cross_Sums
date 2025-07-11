@@ -180,16 +180,21 @@ public class UserInterface extends JFrame{
 
         @Override
         protected void paintComponent(Graphics g) {
+            Color color;
             if (visible) {
+                color = Color.BLACK;
+            }
+                else {
+                    color = Color.LIGHT_GRAY;
+            }
                 super.paintComponent(g);
-                g.setColor(Color.BLACK);
+                g.setColor(color);
                 g.setFont(new Font("Arial", Font.BOLD, 18));
                 FontMetrics fm = g.getFontMetrics();
                 String text = String.valueOf(value);
                 int x = (getWidth() - fm.stringWidth(text)) / 2;
                 int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
                 g.drawString(text, x, y);
-            }
         }
     }
 
