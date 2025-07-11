@@ -13,6 +13,10 @@ public class UserInterface extends JFrame{
     private int secondsPassed = 0;
     private JLabel timerLabel;
     private final LevelData levelData;
+    int minutes;
+    int seconds;
+    int totalMinutes = 0;
+    int totalSeconds = 0;
 
     public UserInterface(LevelData levelData) {
         this.levelData = levelData;
@@ -103,8 +107,8 @@ public class UserInterface extends JFrame{
     public void startTimer() {
         gameTimer = new javax.swing.Timer(1000, e -> {
             secondsPassed++;
-            int minutes = secondsPassed / 60;
-            int seconds = secondsPassed % 60;
+            minutes = secondsPassed / 60;
+            seconds = secondsPassed % 60;
             timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
         });
         gameTimer.start();
@@ -113,6 +117,12 @@ public class UserInterface extends JFrame{
         if (gameTimer != null) {
             gameTimer.stop();
         }
+    }
+    //Durchschnittliche Zeit, die zum Lösen benötigt wird
+    public int averageTime() {
+        totalSeconds += seconds + minutes*60;
+
+        return totalSeconds / (levelData.levelNumber-1);
     }
 
     private  JPanel createGrayBox(String text) {
@@ -169,9 +179,16 @@ public class UserInterface extends JFrame{
 
                     if (levelData.isSolved()) {
                         stopTimer();
+                        if (seconds < 15 && minutes == 0) {
                         JOptionPane.showMessageDialog(
-                                UserInterface.this,"Level gelöst!"
-                        );
+                                UserInterface.this,"Level  in " + seconds +" Sekunden gelöst! Schnell!"+ "\nDurchschnitlich:" + averageTime() + " Sekunden");
+                        } else if (seconds < 60 && minutes == 0) {
+                            JOptionPane.showMessageDialog(
+                                    UserInterface.this,"Level in " + seconds +" Sekunden gelöst!" + "\nDurchschnitlich:" + averageTime() + " Sekunden");
+                        } else if (minutes != 0) {
+                            JOptionPane.showMessageDialog(
+                                    UserInterface.this,"Level in " + minutes + " Minuten und "+ seconds +" Sekunden gelöst." + "\nDurchschnitlich:" + averageTime() + " Sekunden");
+                        }
                         startNextLevel();
                     }
                 }
@@ -200,10 +217,9 @@ public class UserInterface extends JFrame{
 
     private void startNextLevel() {
         dispose();
-        int nextLevel = levelData.getLevelNumber() + 1;
 
         SwingUtilities.invokeLater(()-> {
-            UserInterface ui = new UserInterface(tempmain.startLevel(nextLevel));
+            UserInterface ui = new UserInterface(tempmain.startLevel(levelData.levelNumber));
             ui.setVisible(true);
             ui.startTimer();
         });
