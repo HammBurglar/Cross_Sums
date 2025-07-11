@@ -49,6 +49,13 @@ public class UserInterface extends JFrame{
         levelLabel.setHorizontalAlignment(SwingConstants.CENTER);
         topPanel.add(levelLabel, BorderLayout.CENTER);
 
+        if(levelData.levelNumber % 6 == 0) {
+            JLabel mult = new JLabel("Zahlen werden multipliziert!");
+            mult.setForeground(Color.RED);
+            mult.setHorizontalAlignment(SwingConstants.CENTER);
+            topPanel.add(mult, BorderLayout.SOUTH);
+        }
+
         // Timer-Anzeige
         timerLabel = new JLabel("00:00");
         timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
