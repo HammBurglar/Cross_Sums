@@ -1,13 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
 public class UserInterface extends JFrame{
     private enum Toolmode {PEN, ERASER}
     private Toolmode currentToolMode = Toolmode.PEN;
     private JToggleButton toolButton;
+    private javax.swing.Timer gameTimer;
+    private int secondsPassed = 0;
+    private JLabel timerLabel;
+    private final LevelData levelData;
 
     public UserInterface(LevelData levelData) {
+        this.levelData = levelData;
+
         setTitle("Cross Sums");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -23,7 +32,11 @@ public class UserInterface extends JFrame{
         backButton.setFont(new Font("Arial", Font.BOLD, 20));
         backButton.setContentAreaFilled(false);
         backButton.setBorderPainted(false);
-        backButton.addActionListener(e -> System.out.println("Zurück geklickt"));
+        backButton.addActionListener(e -> {
+            stopTimer();
+            dispose();
+            new StartScreen().setVisible(true);
+        });
         topPanel.add(backButton, BorderLayout.WEST);
 
         // Level Anzeige
@@ -33,9 +46,9 @@ public class UserInterface extends JFrame{
         topPanel.add(levelLabel, BorderLayout.CENTER);
 
         // Timer-Anzeige
-        JLabel timerLable = new JLabel("00:00");
-        timerLable.setFont(new Font("Arial", Font.BOLD, 18));
-        topPanel.add(timerLable, BorderLayout.EAST);
+        timerLabel = new JLabel("00:00");
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        topPanel.add(timerLabel, BorderLayout.EAST);
 
         add(topPanel, BorderLayout.NORTH);
 
@@ -67,7 +80,7 @@ public class UserInterface extends JFrame{
         for (int i = 0; i < levelData.getRows(); i++) {
             for (int j = 0; j < levelData.getCols(); j++) {
                 int value = levelData.getGridNumbers()[i][j];
-                gridPanel.add(new NumberCell(value));
+                gridPanel.add(new NumberCell(value, i, j));
             }
         }
 
@@ -84,6 +97,22 @@ public class UserInterface extends JFrame{
         toolButton.addActionListener(e -> updateToolButton());
         bottomPanel.add(toolButton);
         add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    //Starten und stoppen des timers
+    public void startTimer() {
+        gameTimer = new javax.swing.Timer(1000, e -> {
+            secondsPassed++;
+            int minutes = secondsPassed / 60;
+            int seconds = secondsPassed % 60;
+            timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+        });
+        gameTimer.start();
+    }
+    public void stopTimer() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
     }
 
     private  JPanel createGrayBox(String text) {
@@ -112,25 +141,66 @@ public class UserInterface extends JFrame{
     //Innere Klasse für Zahlenkästchen
     private class NumberCell extends JPanel {
         private final int value;
+        private final int row;
+        private final int col;
+        private boolean visible = true;
 
-        public NumberCell(int value) {
+        public NumberCell(int value, int row, int col) {
             this.value = value;
+            this.row = row;
+            this.col = col;
+
             setPreferredSize(new Dimension(50, 50));
             setBackground(Color.WHITE);
             setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             setOpaque(true);
+
+            addMouseListener( new MouseAdapter( ) {
+                @Override
+                public void mouseClicked (MouseEvent e){
+                    if (currentToolMode == Toolmode.ERASER) {
+                        levelData.erase(row, col);
+                        visible = false;
+                    } else {
+                        levelData.write(row, col);
+                        visible = true;
+                    }
+                    repaint();
+
+                    if (levelData.isSolved()) {
+                        stopTimer();
+                        JOptionPane.showMessageDialog(
+                                UserInterface.this,"Level gelöst!"
+                        );
+                        startNextLevel();
+                    }
+                }
+            });
         }
 
         @Override
         protected void paintComponent(Graphics g) {
-            super.paintComponents(g);
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 18));
-            FontMetrics fm = g.getFontMetrics();
-            String text = String.valueOf(value);
-            int x = (getWidth() - fm.stringWidth(text)) / 2;
-            int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-            g.drawString(text, x, y);
+            if (visible) {
+                super.paintComponent(g);
+                g.setColor(Color.BLACK);
+                g.setFont(new Font("Arial", Font.BOLD, 18));
+                FontMetrics fm = g.getFontMetrics();
+                String text = String.valueOf(value);
+                int x = (getWidth() - fm.stringWidth(text)) / 2;
+                int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+                g.drawString(text, x, y);
+            }
         }
+    }
+
+    private void startNextLevel() {
+        dispose();
+        int nextLevel = levelData.getLevelNumber() + 1;
+
+        SwingUtilities.invokeLater(()-> {
+            UserInterface ui = new UserInterface(tempmain.startLevel(nextLevel));
+            ui.setVisible(true);
+            ui.startTimer();
+        });
     }
 }

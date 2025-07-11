@@ -10,6 +10,7 @@ class LevelData {
     int[] colSums;
     int[][] erasedNumbers;
 
+
     public LevelData(int levelNumber, int rows, int cols, int[][] gridNumbers,
                      int[] rowSums, int[] colSums) {
         this.levelNumber = levelNumber;
@@ -133,7 +134,7 @@ class LevelData {
 
     // Radieren eines Werts
     public void erase(int i, int j) {
-        erasedNumbers = new int[rows][cols];
+        erasedNumbers = new int[i][j];
         if (gridNumbers[i][j] != 0) {
             erasedNumbers[i][j] = gridNumbers[i][j];
             gridNumbers[i][j] = 0;
