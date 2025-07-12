@@ -72,10 +72,10 @@ public class MultLevelData extends LevelData{
                 rowMul *= gridNumbers[i][j];
                 if(j == cols-1) {
                     correct = correct && rowMul == rowSums[i];
-                    rowMul = 0;
+                    rowMul = 1;
                 }
                 if(!correct) {
-                    System.out.println("at row " + i);
+                    System.out.println("mult at row " + i);
                     return false;
                 }
             }
@@ -85,10 +85,10 @@ public class MultLevelData extends LevelData{
                 colMul *= gridNumbers[i][j];
                 if(i == rows-1) {
                     correct = correct && colMul == colSums[j];
-                    colMul = 0;
+                    colMul = 1;
                 }
                 if(!correct) {
-                    System.out.println("at col " + j);
+                    System.out.println("mult at col " + j);
                     return false;
                 }
             }

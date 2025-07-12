@@ -7,7 +7,7 @@ import java.awt.event.MouseListener;
 
 public class UserInterface extends JFrame{
     private enum Toolmode {PEN, ERASER}
-    private Toolmode currentToolMode = Toolmode.PEN;
+    private Toolmode currentToolMode = Toolmode.ERASER;
     private JToggleButton toolButton;
     private javax.swing.Timer gameTimer;
     private int secondsPassed = 0;
@@ -15,11 +15,11 @@ public class UserInterface extends JFrame{
     private final LevelData levelData;
     int minutes;
     int seconds;
-    int totalMinutes = 0;
     int totalSeconds = 0;
 
-    public UserInterface(LevelData levelData) {
+    public UserInterface(LevelData levelData, int totalSeconds) {
         this.levelData = levelData;
+        this.totalSeconds = totalSeconds;
 
         setTitle("Cross Sums");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -126,7 +126,7 @@ public class UserInterface extends JFrame{
         }
     }
     //Durchschnittliche Zeit, die zum Lösen benötigt wird
-    public int averageTime() {
+    public double averageTime() {
         totalSeconds += seconds + minutes*60;
 
         return totalSeconds / (levelData.levelNumber-1);
@@ -196,6 +196,7 @@ public class UserInterface extends JFrame{
                             JOptionPane.showMessageDialog(
                                     UserInterface.this,"Level in " + minutes + " Minuten und "+ seconds +" Sekunden gelöst." + "\nDurchschnitlich:" + averageTime() + " Sekunden");
                         }
+                        System.out.println(totalSeconds);
                         startNextLevel();
                     }
                 }
@@ -207,9 +208,8 @@ public class UserInterface extends JFrame{
             Color color;
             if (visible) {
                 color = Color.BLACK;
-            }
-                else {
-                    color = Color.LIGHT_GRAY;
+            } else {
+                color = Color.LIGHT_GRAY;
             }
                 super.paintComponent(g);
                 g.setColor(color);
@@ -226,7 +226,7 @@ public class UserInterface extends JFrame{
         dispose();
 
         SwingUtilities.invokeLater(()-> {
-            UserInterface ui = new UserInterface(tempmain.startLevel(levelData.levelNumber));
+            UserInterface ui = new UserInterface(tempmain.startLevel(levelData.levelNumber), totalSeconds);
             ui.setVisible(true);
             ui.startTimer();
         });

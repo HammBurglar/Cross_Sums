@@ -110,7 +110,7 @@ class LevelData {
                     rowSum = 0;
                 }
                 if(!correct) {
-                    System.out.println("at row " + i);
+                    System.out.println("add at row " + i);
                     return false;
                 }
             }
@@ -123,7 +123,7 @@ class LevelData {
                     colSum = 0;
                 }
                 if(!correct) {
-                    System.out.println("at col " + j);
+                    System.out.println("add at col " + j);
                     return false;
                 }
             }

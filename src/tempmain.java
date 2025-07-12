@@ -14,6 +14,11 @@ public class tempmain {
 
         levelData.createGrid();
         levelData.createSums();
+
+        if (levelData.isSolved()) {
+            return startLevel(level);
+        }
+
         return levelData;
 
         /*
